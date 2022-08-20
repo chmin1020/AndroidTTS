@@ -10,8 +10,8 @@ import java.io.File
 interface ITTSDriver {
     //Driver 시작 세팅, 종료 세팅
 
-    /* 코드에서 사용할 TTS 객체를 설정하는 함수 */
-    fun setup(config: TTSConfig)
+    /* TTS 객체를 위한 config 모델을 세팅하는 함수 */
+    fun setConfiguration(config: TTSConfig)
 
     /* 모델에 설정된 pitch 시작값대로 tts 속성 및 뷰를 세팅하는 함수 */
     fun initPitch(): Float
@@ -22,8 +22,8 @@ interface ITTSDriver {
     /* 모델에 설정된 language 시작값대로 tts 속성 및 뷰를 세팅하는 함수 */
     fun initLanguage(): String
 
-    /* TTS 객체의 사용을 중단하는 함수 */
-    fun release()
+    /* TTS 객체를 완전히 종료하는 함수 */
+    fun destroy()
 
 
     //Driver 설정 값 변경 관련

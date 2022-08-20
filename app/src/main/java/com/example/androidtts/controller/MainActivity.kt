@@ -19,7 +19,8 @@ import com.example.androidtts.model.fileManager.ITTSFileManager
 
 /**
  * 이 앱의 메인 화면 controller 역할을 하는 액티비티.
- * Model, View 를 연결하며, 기본적으로 driver 객체를 활용하되, 음성 파일 저장은 file manager 객체도 활용한다.
+ * 이 화면에서는 tts 속성을 변경할 수 있고, 이를 통해 만들어진 음성을 듣거나 파일로 다운로드 받을 수 있다.
+ * 따라서 모델은 기본적으로 driver 객체를 활용하되, 음성 파일 저장은 file manager 객체도 활용한다.
  * 뷰를 통해 사용자가 데이터 변경을 요청하면 모델에서 이것이 수행되고, 필요한 내용은 다시 뷰에 전달된다.
  **/
 class MainActivity : AppCompatActivity() {
@@ -56,9 +57,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(binder.root)
 
         //driver 모델에 config 의존성 주입
-        ttsDriver.setup(TTSConfig())
+        ttsDriver.setConfiguration(TTSConfig())
 
-        //각 뷰들의 이벤트와 초기 값들 설정
+        //뷰와 이벤트 설정
         linkSpinnerWithAdapter() //언어 선택 스피너 뷰 관련 설정
         initSettingValuesUI() //설정 값을 나타내는 뷰들 내용에 기본 값 설정
         initListeners() //나머지 터치 가능 뷰들의 리스너 설정
@@ -66,7 +67,7 @@ class MainActivity : AppCompatActivity() {
 
     /* onDestroy()에서 tts 객체를 완전 제거 */
     override fun onDestroy() {
-        ttsDriver.release()
+        ttsDriver.destroy()
         super.onDestroy()
     }
 
@@ -75,7 +76,7 @@ class MainActivity : AppCompatActivity() {
     // 함수 영역 (뷰 설정)
     //
 
-    /* 스피너 뷰와 자체와 관련 이벤트를 설정하는 함수 */
+    /* 스피너와 이를 위한 어댑터를 연결하는 함수 */
     private fun linkSpinnerWithAdapter() {
         //language 배열을 가져와 어댑터를 설정하고, 그 어댑터를 스피너와 연결
         val spinnerAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, languages)
@@ -128,7 +129,7 @@ class MainActivity : AppCompatActivity() {
                 tryDownLoad(contents, title)
         }
 
-        //음성의 pitch(발성)를 높이거나 낮춤 ( view -> controller -> model -> controller -> <tts, view> )
+        //seekbarPitch 바를 통해 음성의 pitch(발성)를 높이거나 낮춤
         binder.seekbarPitch.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener{
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 applyPitch(progress)
@@ -137,7 +138,7 @@ class MainActivity : AppCompatActivity() {
             override fun onStopTrackingTouch(seekBar: SeekBar?) {}
         })
 
-        //음성의 빠르기를 높이거나 낮춤 ( view -> controller -> model -> controller -> <tts, view> )
+        //seekbarRate 바를 통해 음성의 빠르기를 높이거나 낮춤
         binder.seekbarRate.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener{
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 applyRate(progress)
@@ -166,7 +167,7 @@ class MainActivity : AppCompatActivity() {
     /* contents 내용으로 만든 음성을 title 이름의 파일로 저장을 시도하는 함수 */
     private fun tryDownLoad(contents: String, title: String){
         //fileManager 객체로 파일을 만들고 driver 객체가 음성 파일 주입 시도
-        val file = ttsFileManager.addNewFile("$title.mp3")
+        val file = ttsFileManager.makeFile("$title.mp3")
         val tryingResult = ttsDriver.insertSpeechInFile(contents, file)
 
         //성공 여부에 따라 다른 토스트 메시지 출력

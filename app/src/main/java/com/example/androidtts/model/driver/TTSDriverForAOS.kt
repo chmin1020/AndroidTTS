@@ -29,15 +29,9 @@ class TTSDriverForAOS(context: Context): ITTSDriver {
 
     //Driver 시작 세팅, 종료 세팅
 
-    /* 코드에서 사용할 TTS 객체를 설정하는 함수 */
-    override fun setup(config: TTSConfig) {
-        //config 의존 관계 성립
+    /* TTS 객체를 위한 config 모델을 세팅하는 함수 */
+    override fun setConfiguration(config: TTSConfig) {
         this.config = config
-
-        //tts 객체 기본 값으로 설정
-        initPitch()
-        initRate()
-        initLanguage()
     }
 
     /* 모델에 설정된 pitch 시작값대로 tts 속성 및 뷰를 세팅하는 함수 */
@@ -61,8 +55,8 @@ class TTSDriverForAOS(context: Context): ITTSDriver {
         return defaultLanguage
     }
 
-    /* TTS 객체의 사용을 중단하는 함수 */
-    override fun release(){
+    /* TTS 객체를 완전히 종료하는 함수 */
+    override fun destroy(){
         textToSpeech.stop()
         textToSpeech.shutdown()
     }
@@ -95,9 +89,9 @@ class TTSDriverForAOS(context: Context): ITTSDriver {
         textToSpeech.speak(contents, TextToSpeech.QUEUE_FLUSH, null, null)
     }
 
-    /* TTS 객체를 통해 그 음성을 파일로 다운로드받는 함수 */
+    /* TTS 객체를 통해 그 음성을 파일로 다운로드받는 함수
+        파일에 음성 데이터 합성 (빈 파일에 음성 내용 넣기) -> 성공 여부 반환 */
     override fun insertSpeechInFile(contents: String, file : File): Int{
-        //파일에 음성 데이터 합성 (빈 파일에 음성 내용 넣기) -> 성공 여부 반환
         return textToSpeech.synthesizeToFile(contents, null, file, null)
     }
 }

@@ -12,6 +12,12 @@ import com.example.androidtts.model.fileManager.FileManagerProvider
 import com.example.androidtts.model.fileManager.ITTSFileManager
 import java.io.File
 
+/**
+ * 이 앱의 저장된 음성 리스트 화면 controller 역할을 하는 액티비티.
+ * tts 객체가 아닌 파일 관련 모델만 필요하므로 fileManager 객체만 뷰와 연결한다.
+ * VoiceListAdapter 객체를 어댑터로 활용하는 리사이클러뷰가 이 화면 내 모든 기능의 중심이 된다.
+ * 따라서 이 액티비티는 리사이클러뷰 설정 및 이를 위한 어댑터 설정만을 한다.
+ **/
 class ListActivity : AppCompatActivity() {
 
     //-------------------------------------------
@@ -28,6 +34,7 @@ class ListActivity : AppCompatActivity() {
     // 생명 주기
     //
 
+    /* onCreate()에서 뷰 연결 및 리사이클러뷰의 레이아웃 매니저, 어댑터 설정 */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -46,7 +53,7 @@ class ListActivity : AppCompatActivity() {
     /* 음성 파일 리스트 어댑터 설정을 위한 함수
         - 파일 리스트를 불러와서 연결하고, 리스트 내 아이템을 위한 이벤트 리스너를 지정한다. */
     private fun makeAdapterForRecyclerView(): VoiceListAdapter {
-        //리사이클러뷰에 표시할 파일 리스트 불러와서 저장
+        //리사이클러뷰에 표시할 파일 리스트 불러와서 저장 (어댑터 설정 시에만 필요하므로 함수 내에서 선언 )
         val fileList = arrayListOf<File>()
         ttsFileManager.getFileList()?.also { fileList.addAll(it) }
 
