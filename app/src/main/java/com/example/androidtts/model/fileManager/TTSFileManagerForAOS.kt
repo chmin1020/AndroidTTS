@@ -17,6 +17,7 @@ class TTSFileManagerForAOS(private val context: Context): ITTSFileManager {
     override fun getFileNameList(): List<String> {
         val fileNames = mutableListOf<String>()
 
+        //확장자가 mp3인 파일만 뽑아서 리스트에 추가 (tts 관련 파일만 가져오기 위함)
         val mp3Files = savedPath.listFiles()?.filter { it.extension == "mp3" }
         mp3Files?.forEach { fileNames.add(it.name) }
 
@@ -24,7 +25,7 @@ class TTSFileManagerForAOS(private val context: Context): ITTSFileManager {
     }
 
     /* 새로운 음성 파일을 추가하고자 할 때 호출하는 함수 */
-    override fun makeFile(fileName: String): File {
+    override fun makeFile(fileName: String):  File {
         return File(savedPath, fileName)
     }
 

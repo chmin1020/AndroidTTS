@@ -6,9 +6,8 @@ import com.example.androidtts.model.config.TTSConfig
 import java.io.File
 
 /**
- * TextToSpeech 객체의 사용을 도와주는 클래스.
- * 기존의 MVC 패턴 내부 인스턴스들은 특정 TTS API(ex -> android TextToSpeech)에 종속되지 않고 ttsHelper 인스턴스를 사용하면 된다.
- * 저장 기능 수행을 위해서 파일을 저장할 경로(디렉토리)를 인자로 받아 저장한다.
+ * 안드로이드가 제공하는 textToSpeech 기능으로 driver 기능을 수행하는 모델 객체.
+ * 어떤 앱 콘텍스트에서 tts 객체가 동작할지 알기 위해 인자로 앱 콘텍스트를 받아 적용한다.
  **/
 class TTSDriverForAOS(context: Context): ITTSDriver {
 

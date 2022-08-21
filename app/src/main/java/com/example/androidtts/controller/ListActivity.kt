@@ -57,7 +57,7 @@ class ListActivity : AppCompatActivity() {
         //파일 리스트를 어댑터에 적용
         val voiceListAdapter = VoiceListAdapter(fileNameList)
 
-        //리사이클러뷰 속 각 아이템의 클릭 이벤트 처리
+        //리사이클러뷰 속 각 아이템의 클릭 이벤트 처리를 위한 리스너 지정
         voiceListAdapter.setEachViewClickListener(object: VoiceListAdapter.OnEachViewClickListener{
             //각 아이템 뷰의 실행 이미지를 누를 경우의 이벤트 (파일에 저장된 음성 실행)
             override fun onPlayClick(fileName: String) {
