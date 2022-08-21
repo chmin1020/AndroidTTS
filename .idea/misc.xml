@@ -3,6 +3,8 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/jeong/AndroidStudioProjects/AndroidTTS/app/src/main/res/drawable/delete.xml" value="0.1535" />
+        <entry key="..\:/Users/jeong/AndroidStudioProjects/AndroidTTS/app/src/main/res/drawable/play.xml" value="0.1535" />
         <entry key="..\:/Users/jeong/AndroidStudioProjects/AndroidTTS/app/src/main/res/layout/activity_list.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/jeong/AndroidStudioProjects/AndroidTTS/app/src/main/res/layout/activity_main.xml" value="0.17889492753623187" />
       </map>

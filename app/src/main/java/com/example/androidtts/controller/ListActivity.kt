@@ -1,16 +1,13 @@
 package com.example.androidtts.controller
 
-import android.media.MediaPlayer
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
-import androidx.core.net.toUri
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.androidtts.adapter.VoiceListAdapter
 import com.example.androidtts.databinding.ActivityListBinding
-import com.example.androidtts.model.fileManager.FileManagerProvider
 import com.example.androidtts.model.fileManager.ITTSFileManager
-import java.io.File
+import com.example.androidtts.model.fileManager.TTSFileManagerForAOS
 
 /**
  * 이 앱의 저장된 음성 리스트 화면 controller 역할을 하는 액티비티.
@@ -25,7 +22,7 @@ class ListActivity : AppCompatActivity() {
     //
 
     //음성 파일 관리를 위한 model instance (singleton 사용을 위해 Handler 이용해서 가져온다.)
-    private val ttsFileManager: ITTSFileManager by lazy{ FileManagerProvider.getInstanceForAOS(applicationContext.filesDir)}
+    private val ttsFileManager: ITTSFileManager by lazy{ TTSFileManagerForAOS(applicationContext) }
 
     //뷰 바인딩 instance
     private val binder: ActivityListBinding by lazy { ActivityListBinding.inflate(layoutInflater) }
@@ -54,22 +51,22 @@ class ListActivity : AppCompatActivity() {
         - 파일 리스트를 불러와서 연결하고, 리스트 내 아이템을 위한 이벤트 리스너를 지정한다. */
     private fun makeAdapterForRecyclerView(): VoiceListAdapter {
         //리사이클러뷰에 표시할 파일 리스트 불러와서 저장 (어댑터 설정 시에만 필요하므로 함수 내에서 선언 )
-        val fileList = arrayListOf<File>()
-        ttsFileManager.getFileList()?.also { fileList.addAll(it) }
+        val fileNameList = arrayListOf<String>()
+        ttsFileManager.getFileNameList()?.also { fileNameList.addAll(it) }
 
         //파일 리스트를 어댑터에 적용
-        val voiceListAdapter = VoiceListAdapter(fileList)
+        val voiceListAdapter = VoiceListAdapter(fileNameList)
 
         //리사이클러뷰 속 각 아이템의 클릭 이벤트 처리
         voiceListAdapter.setEachViewClickListener(object: VoiceListAdapter.OnEachViewClickListener{
             //각 아이템 뷰의 실행 이미지를 누를 경우의 이벤트 (파일에 저장된 음성 실행)
-            override fun onPlayClick(file: File) {
-                MediaPlayer.create(this@ListActivity, file.toUri()).start()
+            override fun onPlayClick(fileName: String) {
+                ttsFileManager.playFile(fileName)
             }
 
             //각 아이템 뷰의 삭제 이미지를 누를 경우의 이벤트 (파일을 삭제하고 토스트 메시지 표시)
-            override fun onDeleteClick(file: File) {
-                ttsFileManager.removeFile(file)
+            override fun onDeleteClick(fileName: String) {
+                ttsFileManager.removeFile(fileName)
                 Toast.makeText(this@ListActivity, "파일이 삭제되었습니다.", Toast.LENGTH_SHORT).show()
             }
         })

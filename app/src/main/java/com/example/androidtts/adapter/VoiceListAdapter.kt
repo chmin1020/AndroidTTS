@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.androidtts.R
 import com.example.androidtts.databinding.VoiceListItemBinding
-import java.io.File
 
 /**
  * 음성 파일 리스트를 표현할 리사이클러뷰의 어댑터.
@@ -14,7 +13,7 @@ import java.io.File
  * 리스트를 위한 적절한 커스텀 뷰홀더는 이 어댑터의 내부 클래스로 설계되어 있다.
  * 추가적으로 클릭 관련 인터페이스를 가져서 각 뷰홀더 터치에 이벤트를 적용할 수 있도록 한다.
  **/
-class VoiceListAdapter(private val fileList: ArrayList<File>)
+class VoiceListAdapter(private val fileNameList: ArrayList<String>)
     : RecyclerView.Adapter<VoiceListAdapter.VoiceViewHolder>() {
 
     //--------------------------------------------
@@ -23,8 +22,8 @@ class VoiceListAdapter(private val fileList: ArrayList<File>)
 
     //이 어댑터가 담당하는 뷰홀더 속 각 뷰에 대한 클릭 이벤트 처리 인터페이스
     interface OnEachViewClickListener{
-        fun onPlayClick(file: File) //실행 이벤트
-        fun onDeleteClick(file: File) //삭제 이벤트
+        fun onPlayClick(fileName: String) //실행 이벤트
+        fun onDeleteClick(fileName: String) //삭제 이벤트
     }
 
     //각 어댑터가 가질 위 인터페이스의 인스턴스
@@ -66,28 +65,28 @@ class VoiceListAdapter(private val fileList: ArrayList<File>)
     /* 생성된, 혹은 재활용하는 뷰홀더의 내용 및 이벤트 리스너를 지정한다. */
     override fun onBindViewHolder(holder: VoiceViewHolder, position: Int) {
         //각 뷰홀더가 가리킬 음성 파일
-        val file = fileList[position]
+        val fileName = fileNameList[position]
 
         //각 뷰홀더 속 플레이 이미지 누를 시 진행되는 이벤트 세팅
         val playListener = View.OnClickListener {
-            eachViewClickListener.onPlayClick(file)
+            eachViewClickListener.onPlayClick(fileName)
         }
 
         //각 뷰홀더 속 삭제 이미지 누를 시 진행되는 이벤트 세팅
         val deleteListener = View.OnClickListener {
-            eachViewClickListener.onDeleteClick(file)
+            eachViewClickListener.onDeleteClick(fileName)
 
             //어댑터가 가진 리스트에서도 파일 삭제하고 리스트 뷰 자체도 갱신
-            fileList.remove(file)
+            fileNameList.remove(fileName)
             notifyItemRemoved(position)
         }
 
         //각 뷰홀더 인스턴스에 설정할 내용 전달
-        holder.bind(file.name, playListener, deleteListener)
+        holder.bind(fileName, playListener, deleteListener)
     }
 
     /* 이 어댑터에서 관리하는 아이템의 개수를 반환한다. */
     override fun getItemCount(): Int {
-        return fileList.size
+        return fileNameList.size
     }
 }

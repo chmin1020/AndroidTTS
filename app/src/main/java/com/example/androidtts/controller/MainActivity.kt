@@ -14,8 +14,8 @@ import com.example.androidtts.databinding.ActivityMainBinding
 import com.example.androidtts.model.config.TTSConfig
 import com.example.androidtts.model.driver.ITTSDriver
 import com.example.androidtts.model.driver.TTSDriverForAOS
-import com.example.androidtts.model.fileManager.FileManagerProvider
 import com.example.androidtts.model.fileManager.ITTSFileManager
+import com.example.androidtts.model.fileManager.TTSFileManagerForAOS
 
 /**
  * 이 앱의 메인 화면 controller 역할을 하는 액티비티.
@@ -39,7 +39,7 @@ class MainActivity : AppCompatActivity() {
     //tts 사용을 위한 모델 (실제 사용될 driver, 파일 저장을 위한 file manager<Singleton>)
     //안드로이드 환경이므로 안드로이드 OS 전용 모델을 활용
     private val ttsDriver: ITTSDriver by lazy{ TTSDriverForAOS(applicationContext) }
-    private val ttsFileManager: ITTSFileManager by lazy{ FileManagerProvider.getInstanceForAOS(applicationContext.filesDir)}
+    private val ttsFileManager: ITTSFileManager by lazy{ TTSFileManagerForAOS(applicationContext) }
 
     //뷰 바인딩 객체
     private val binder: ActivityMainBinding by lazy { ActivityMainBinding.inflate(layoutInflater) }
@@ -166,7 +166,7 @@ class MainActivity : AppCompatActivity() {
 
     /* contents 내용으로 만든 음성을 title 이름의 파일로 저장을 시도하는 함수 */
     private fun tryDownLoad(contents: String, title: String){
-        //fileManager 객체로 파일을 만들고 driver 객체가 음성 파일 주입 시도
+        //fileManager 객체로 파일을 만들고 driver 객체가 음성 파일 주입 시도함
         val file = ttsFileManager.makeFile("$title.mp3")
         val tryingResult = ttsDriver.insertSpeechInFile(contents, file)
 
@@ -174,7 +174,7 @@ class MainActivity : AppCompatActivity() {
         if(tryingResult == TextToSpeech.SUCCESS)
             Toast.makeText(this, "저장 성공", Toast.LENGTH_SHORT).show()
         else {
-            ttsFileManager.removeFile(file) //음성 주입에 실패했으므로 빈 파일은 삭제
+            ttsFileManager.removeFile(file.name) //음성 주입에 실패했으므로 빈 파일은 삭제
             Toast.makeText(this, "저장 실패", Toast.LENGTH_SHORT).show()
         }
     }
